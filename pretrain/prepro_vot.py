@@ -13,7 +13,7 @@ with open(seqlist_path,'r') as fp:
 # Construct db
 data = OrderedDict()
 for i, seq in enumerate(seq_list):
-    img_list = sorted([p for p in os.listdir(os.path.join(seq_home, seq)) if os.path.splitext(p)[1] == '.jpg'])
+    img_list = sorted([p for p in os.listdir(os.path.join(seq_home,"color/", seq)) if os.path.splitext(p)[1] == '.jpg'])
     gt = np.loadtxt(os.path.join(seq_home, seq, 'groundtruth.txt'), delimiter=',')
 
     if seq == 'vot2014/ball':
