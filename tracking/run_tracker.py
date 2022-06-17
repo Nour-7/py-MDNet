@@ -105,6 +105,12 @@ def train(model, criterion, optimizer, pos_feats, neg_feats, maxiter, in_layer='
 def run_mdnet(img_list, init_bbox, gt=None, savefig_dir='', display=False):
 
     # Init bbox
+    if init_bbox.shape[1] == 8:
+        x_min = np.min(init_bbox[:, [0, 2, 4, 6]], axis=1)[:, None]
+        y_min = np.min(init_bbox[:, [1, 3, 5, 7]], axis=1)[:, None]
+        x_max = np.max(init_bbox[:, [0, 2, 4, 6]], axis=1)[:, None]
+        y_max = np.max(init_bbox[:, [1, 3, 5, 7]], axis=1)[:, None]
+        init_bbox = np.concatenate((x_min, y_min, x_max - x_min, y_max - y_min), axis=1)
     target_bbox = np.array(init_bbox)
     result = np.zeros((len(img_list), 4))
     result_bb = np.zeros((len(img_list), 4))
@@ -185,6 +191,11 @@ def run_mdnet(img_list, init_bbox, gt=None, savefig_dir='', display=False):
         im = ax.imshow(image, aspect='auto')
 
         if gt is not None:
+            if gt.shape[1] == 8:
+                x_min = np.min(gt[:, [0, 2, 4, 6]], axis=1)[:, None]
+                y_min = np.min(gt[:, [1, 3, 5, 7]], axis=1)[:, None]
+                x_max = np.max(gt[:, [0, 2, 4, 6]], axis=1)[:, None]
+                y_max = np.max(gt[:, [1, 3, 5, 7]], axis=1)[:, None]
             gt_rect = plt.Rectangle(tuple(gt[0, :2]), gt[0, 2], gt[0, 3],
                                     linewidth=3, edgecolor="#00ff00", zorder=1, fill=False)
             ax.add_patch(gt_rect)
