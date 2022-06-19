@@ -12,8 +12,8 @@ def gen_config(args):
         result_home = 'results'
 
         seq_name = args.seq
-        img_dir = os.path.join(seq_home, seq_name, 'img')
-        gt_path = os.path.join(seq_home, seq_name, 'groundtruth_rect.txt')
+        img_dir = os.path.join(seq_home, seq_name, 'color')
+        gt_path = os.path.join(seq_home, seq_name, 'groundtruth.txt')
 
         img_list = os.listdir(img_dir)
         img_list.sort()
