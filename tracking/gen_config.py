@@ -4,7 +4,7 @@ import numpy as np
 
 
 def gen_config(args):
-
+    
     if args.seq != '':
         # generate config from a sequence name
 

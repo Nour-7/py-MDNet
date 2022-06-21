@@ -108,6 +108,7 @@ def run_mdnet(img_list, init_bbox, gt=None, savefig_dir='', display=False):
     # print(init_bbox)
     # print(init_bbox[[0, 2, 4, 6]])
     # print(init_bbox.shape[0])
+    Iou_mean = 0
     if init_bbox.shape[0] == 8:
         x_min = np.min(init_bbox[[0, 2, 4, 6]])
         y_min = np.min(init_bbox[[1, 3, 5, 7]])
@@ -319,15 +320,16 @@ def run_mdnet(img_list, init_bbox, gt=None, savefig_dir='', display=False):
                 .format(i, len(img_list), overlap[i], target_score, spf))
 
     if gt is not None:
+        Iou_mean = overlap.mean()
         print('meanIOU: {:.3f}'.format(overlap.mean()))
     fps = len(img_list) / spf_total
-    return result, result_bb, fps
+    return result, result_bb, fps, Iou_mean
 
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--seq', default='', help='input seq')
+    parser.add_argument('-s', '--seq', default='DragonBaby', help='input seq')
     parser.add_argument('-j', '--json', default='', help='input json')
     parser.add_argument('-f', '--savefig', action='store_true')
     parser.add_argument('-d', '--display', action='store_true')
@@ -337,16 +339,23 @@ if __name__ == "__main__":
 
     np.random.seed(0)
     torch.manual_seed(0)
-
+    otb_seq = ['basketball', 'bolt2', 'car1', 'car2', 'crossing', 'girl', 'matrix', 'shaking', 'singer1', 'singer2']
     # Generate sequence config
-    img_list, init_bbox, gt, savefig_dir, display, result_path = gen_config(args)
+    Iou_list = []
+    for seq in otb_seq:
+        args.seq = seq
+        img_list, init_bbox, gt, savefig_dir, display, result_path = gen_config(args)
+        print(seq, "Sequence")
+        # Run tracker
+        result, result_bb, fps, Iou_mean = run_mdnet(img_list, init_bbox, gt=gt, savefig_dir=savefig_dir, display=display)
+        Iou_list.append(Iou_mean)
+        # Save result
+        res = {}
+        res['res'] = result_bb.round().tolist()
+        res['type'] = 'rect'
+        res['fps'] = fps
+        json.dump(res, open(result_path, 'w'), indent=2)
 
-    # Run tracker
-    result, result_bb, fps = run_mdnet(img_list, init_bbox, gt=gt, savefig_dir=savefig_dir, display=display)
-
-    # Save result
     res = {}
-    res['res'] = result_bb.round().tolist()
-    res['type'] = 'rect'
-    res['fps'] = fps
-    json.dump(res, open(result_path, 'w'), indent=2)
+    res['Iou'] = Iou_list
+    json.dump(res, open('results/iou.json', 'w'), indent=2)
