@@ -104,10 +104,7 @@ def train(model, criterion, optimizer, pos_feats, neg_feats, maxiter, in_layer='
 
 def run_mdnet(img_list, init_bbox, gt=None, savefig_dir='', display=False):
 
-    # Init bbox
-    # print(init_bbox)
-    # print(init_bbox[[0, 2, 4, 6]])
-    # print(init_bbox.shape[0])
+   
     Iou_mean = 0
     if init_bbox.shape[0] == 8:
         x_min = np.min(init_bbox[[0, 2, 4, 6]])
@@ -292,7 +289,6 @@ def run_mdnet(img_list, init_bbox, gt=None, savefig_dir='', display=False):
 
             if gt is not None:
                 if gt.shape[1] == 8:
-                  print("ground")
                   x_min = np.min(gt[:, [0, 2, 4, 6]], axis=1)[:, None]
                   y_min = np.min(gt[:, [1, 3, 5, 7]], axis=1)[:, None]
                   x_max = np.max(gt[:, [0, 2, 4, 6]], axis=1)[:, None]

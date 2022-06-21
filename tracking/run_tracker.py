@@ -291,7 +291,6 @@ def run_mdnet(img_list, init_bbox, gt=None, savefig_dir='', display=False):
 
             if gt is not None:
                 if gt.shape[1] == 8:
-                  print("ground")
                   x_min = np.min(gt[:, [0, 2, 4, 6]], axis=1)[:, None]
                   y_min = np.min(gt[:, [1, 3, 5, 7]], axis=1)[:, None]
                   x_max = np.max(gt[:, [0, 2, 4, 6]], axis=1)[:, None]
